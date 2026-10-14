@@ -136,8 +136,7 @@ class Block(nn.Module):
         return x
 
 
-# super simple bigram model
-class BigramLanguageModel(nn.Module):
+class GPTLanguageModel(nn.Module):
     def __init__(self):
         super().__init__()
         # each token directly reads off the logits for the next token from a lookup table
@@ -189,28 +188,30 @@ class BigramLanguageModel(nn.Module):
         return idx
 
 
-model = BigramLanguageModel()
-m = model.to(device)
+model = GPTLanguageModel()
+model = model.to(device)
 
 # create a PyTorch optimizer
 optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)
 
-for iter in range(max_iters):
-    if iter % eval_interval == 0:
-        losses = estimate_loss()
-        print(
-            f"step {iter}: train loss {losses['train']:.4f}, val loss {losses['val']:.4f}"
-        )
+# for iter in range(max_iters):
+# if iter % eval_interval == 0:
+# losses = estimate_loss()
+# print(
+# f"step {iter}: train loss {losses['train']:.4f}, val loss {losses['val']:.4f}"
+# )
 
-    # sample a batch of data
-    xb, yb = get_batch("train")
+## sample a batch of data
+# xb, yb = get_batch("train")
 
-    # evaluate the loss
-    logits, loss = model(xb, yb)
-    optimizer.zero_grad(set_to_none=True)
-    loss.backward()
-    optimizer.step()
+## evaluate the loss
+# logits, loss = model(xb, yb)
+# optimizer.zero_grad(set_to_none=True)
+# loss.backward()
+# optimizer.step()
 
 # generate from the model
 context = torch.zeros((1, 1), dtype=torch.long, device=device)
-print(decode(m.generate(context, max_new_tokens=500)[0].tolist()))
+# print(decode(model.generate(context, max_new_tokens=500)[0].tolist()))
+total_parmas = sum(p.numel() for p in model.parameters())
+print(total_parmas)
